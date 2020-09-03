@@ -3,7 +3,7 @@
 
 Demo [here](https://temp.mgelsk.com)
 
-Pi Temp utilizes a raspberry pi with temperature sensor in order to take temperature/humidity data. It then makes it available on the web through api calls.
+Pi Temp utilizes a raspberry pi with a temperature sensor in order to take temperature/humidity data. It then makes it available on the web through api calls.
 
 #### Features:
 * [API](#api) __server-api__ used for retreiveing and storing temperature and humidity data
