@@ -1,6 +1,6 @@
 FROM python:3.11.9-slim-bookworm
 
-RUN apt-get update && apt-get install -y gcc
+RUN apt-get update && apt-get install -y gcc libgpiod2
 
 RUN pip install adafruit-circuitpython-dht RPi.GPIO requests
 
