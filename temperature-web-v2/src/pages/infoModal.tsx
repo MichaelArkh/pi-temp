@@ -1,4 +1,4 @@
-import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { ScatterChart } from '@mui/x-charts';
 import React from 'react';
 import { TempResponse } from '../types/TempResponse';
@@ -7,7 +7,10 @@ interface InfoProps {
     data: TempResponse;
 }
 
-const InfoModal: React.FC<InfoProps> = ({data}) => {
+const InfoModal: React.FC<InfoProps> = ({ data }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Detect mobile screens
+
 
     const getMinutesElapsed = (start: Date, end: string) => {
         const startDate = new Date(start);
@@ -67,57 +70,57 @@ const InfoModal: React.FC<InfoProps> = ({data}) => {
                     </TableContainer>
                 </Grid>
 
-                <Grid size={{ xs: 12 }}>
-                    <Paper>
-                    <ScatterChart
-                        height={200}
-                        title='Temperature'
-                        series={[
-                            {
-                            data: data.results.map((v) => ({ x: getMinutesElapsed(earlistDate, v.date), y: v.temperature })),
-                            color: 'orange'
-                            },
-                        ]}
-                        grid={{ vertical: true, horizontal: true }}
-                        yAxis={[{label: 'Temperature'}]}
-                        xAxis={[{label: 'Minutes Elapsed'}]}
+                <Grid size={{ xs: 12 }} p={2} component={Paper}>
+                        <Typography variant="h6" align="center">Temperature vs Time</Typography>
+                        <ScatterChart
+                            height={200}
+                            title='Temperature'
+                            series={[
+                                {
+                                    data: data.results.map((v) => ({ x: getMinutesElapsed(earlistDate, v.date), y: v.temperature })),
+                                    color: 'orange'
+                                },
+                            ]}
+                            grid={{ vertical: true, horizontal: true }}
+                            yAxis={isMobile ? [] : [{ label: 'Temperature' }]}
+                            xAxis={isMobile ? [] : [{ label: 'Time (minutes)' }]}
+                            margin={isMobile ? {left: -20, right: 0, top: 0, bottom: 0} : 0}
                         >
                         </ScatterChart>
-                    </Paper>
                 </Grid>
-                <Grid size={{ xs: 12 }}>
-                    <Paper>
-                    <ScatterChart
-                        height={200}
-                        title='Humidity'
-                        series={[
-                            {
-                            data: data.results.map((v) => ({ x: getMinutesElapsed(earlistDate, v.date), y: v.humidity })),
-                            color: 'orange'
-                            },
-                        ]}
-                        grid={{ vertical: true, horizontal: true }}
-                        yAxis={[{label: 'Humidity'}]}
-                        xAxis={[{label: 'Minutes Elapsed'}]}
+                <Grid size={{ xs: 12 }} p={2} component={Paper}>
+                        <Typography variant="h6" align="center">Humidity vs Time</Typography>
+                        <ScatterChart
+                            height={200}
+                            title='Humidity'
+                            series={[
+                                {
+                                    data: data.results.map((v) => ({ x: getMinutesElapsed(earlistDate, v.date), y: v.humidity })),
+                                    color: 'orange'
+                                },
+                            ]}
+                            grid={{ vertical: true, horizontal: true }}
+                            yAxis={isMobile ? [] : [{ label: 'Humidity' }]}
+                            xAxis={isMobile ? [] : [{ label: 'Time (minutes)' }]}
+                            margin={isMobile ? {left: -20, right: 0, top: 0, bottom: 0} : 0}
                         />
-                    </Paper>
                 </Grid>
-                <Grid size={{ xs: 12 }}>
-                    <Paper>
-                    <ScatterChart
-                        height={300}
-                        title='Humidity'
-                        series={[
-                            {
-                            data: data.results.map((v) => ({ x: v.humidity, y: v.temperature })),
-                            color: 'orange'
-                            },
-                        ]}
-                        grid={{ vertical: true, horizontal: true }}
-                        yAxis={[{label: 'Temperature'}]}
-                        xAxis={[{label: 'Humidity'}]}
+                <Grid size={{ xs: 12 }} p={2} component={Paper}>
+                        <Typography variant="h6" align="center">Temperature vs Humidity</Typography>
+                        <ScatterChart
+                            height={300}
+                            title='Humidity'
+                            series={[
+                                {
+                                    data: data.results.map((v) => ({ x: v.humidity, y: v.temperature })),
+                                    color: 'orange'
+                                },
+                            ]}
+                            grid={{ vertical: true, horizontal: true }}
+                            yAxis={isMobile ? [] : [{ label: 'Temperature' }]}
+                            xAxis={isMobile ? [] : [{ label: 'Humidity' }]}
+                            margin={isMobile ? {left: -20, right: 0, top: 0, bottom: 0} : 0}
                         />
-                    </Paper>
                 </Grid>
             </Grid>
         </div>
