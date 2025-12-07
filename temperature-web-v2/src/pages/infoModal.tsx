@@ -12,18 +12,20 @@ const InfoModal: React.FC<InfoProps> = ({ data }) => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Detect mobile screens
 
 
-    const getMinutesElapsed = (start: Date, end: string) => {
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-        const diff = endDate.getTime() - startDate.getTime();
+    const getMinutesFromLatest = (latest: Date, dateStr: string) => {
+        const latestDate = new Date(latest);
+        const d = new Date(dateStr);
+        const diff = latestDate.getTime() - d.getTime();
         return Math.floor(diff / (1000 * 60));
     }
 
-    const getEarliestDate = (data: TempResponse) => {
-        return new Date(Math.min(...data.results.map((d) => new Date(d.date).getTime())))
+    const getLatestDate = (data: TempResponse) => {
+        return new Date(Math.max(...data.results.map((d) => new Date(d.date).getTime())));
     }
 
-    const earlistDate = getEarliestDate(data);
+    const latestDate = getLatestDate(data);
+    const minutesArray = data.results.map((v) => getMinutesFromLatest(latestDate, v.date));
+    const maxMinutes = minutesArray.length ? Math.max(...minutesArray) : 0;
 
     return (
         <div>
@@ -77,13 +79,13 @@ const InfoModal: React.FC<InfoProps> = ({ data }) => {
                             title='Temperature'
                             series={[
                                 {
-                                    data: data.results.map((v) => ({ x: getMinutesElapsed(earlistDate, v.date), y: v.temperature })),
+                                    data: data.results.map((v) => ({ x: getMinutesFromLatest(latestDate, v.date), y: v.temperature })),
                                     color: 'orange'
                                 },
                             ]}
                             grid={{ vertical: true, horizontal: true }}
                             yAxis={isMobile ? [] : [{ label: 'Temperature' }]}
-                            xAxis={isMobile ? [] : [{ label: 'Time (minutes)' }]}
+                            xAxis={isMobile ? [] : [{ label: 'Time (minutes)', min: maxMinutes, max: 0 }]}
                             margin={isMobile ? {left: -20, right: 0, top: 0, bottom: 0} : 0}
                         >
                         </ScatterChart>
@@ -95,13 +97,13 @@ const InfoModal: React.FC<InfoProps> = ({ data }) => {
                             title='Humidity'
                             series={[
                                 {
-                                    data: data.results.map((v) => ({ x: getMinutesElapsed(earlistDate, v.date), y: v.humidity })),
+                                    data: data.results.map((v) => ({ x: getMinutesFromLatest(latestDate, v.date), y: v.humidity })),
                                     color: 'orange'
                                 },
                             ]}
                             grid={{ vertical: true, horizontal: true }}
                             yAxis={isMobile ? [] : [{ label: 'Humidity' }]}
-                            xAxis={isMobile ? [] : [{ label: 'Time (minutes)' }]}
+                            xAxis={isMobile ? [] : [{ label: 'Time (minutes)', min: maxMinutes, max: 0 }]}
                             margin={isMobile ? {left: -20, right: 0, top: 0, bottom: 0} : 0}
                         />
                 </Grid>
