@@ -85,7 +85,7 @@ const InfoModal: React.FC<InfoProps> = ({ data }) => {
                             ]}
                             grid={{ vertical: true, horizontal: true }}
                             yAxis={isMobile ? [] : [{ label: 'Temperature' }]}
-                            xAxis={isMobile ? [] : [{ label: 'Time (minutes)', min: maxMinutes, max: 0 }]}
+                            xAxis={isMobile ? [{min: maxMinutes, max: 0 }] : [{ label: 'Time (minutes)', min: maxMinutes, max: 0 }]}
                             margin={isMobile ? {left: -20, right: 0, top: 0, bottom: 0} : 0}
                         >
                         </ScatterChart>
@@ -103,7 +103,7 @@ const InfoModal: React.FC<InfoProps> = ({ data }) => {
                             ]}
                             grid={{ vertical: true, horizontal: true }}
                             yAxis={isMobile ? [] : [{ label: 'Humidity' }]}
-                            xAxis={isMobile ? [] : [{ label: 'Time (minutes)', min: maxMinutes, max: 0 }]}
+                            xAxis={isMobile ? [{min: maxMinutes, max: 0 }] : [{ label: 'Time (minutes)', min: maxMinutes, max: 0 }]}
                             margin={isMobile ? {left: -20, right: 0, top: 0, bottom: 0} : 0}
                         />
                 </Grid>
