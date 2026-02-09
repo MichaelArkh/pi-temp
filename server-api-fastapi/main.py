@@ -24,6 +24,7 @@ app.add_middleware(
 class TempData(BaseModel):
     temperature: float
     humidity: float
+    outdoor: float
     token: str
     table: str = "bedroom"  # Default room is "bedroom"
 
@@ -61,7 +62,8 @@ async def insert_temp(data: TempData):
 
     del data_dict["token"]  # Remove the token from the data
     del data_dict["table"] # Remove the room from the data
-    
+    if data_dict["outdoor"] == None:
+        del data_dict["outdoor"]
     # Insert the data into the MongoDB collection
     result = await collection.insert_one(data_dict)
 
@@ -107,7 +109,8 @@ async def get_temp(
     if units == "fahrenheit":
         for result in results:
             result["temperature"] = round(result["temperature"] * 9 / 5 + 32, 1)
-
+            if "outdoor" in result:
+                result["outdoor"] = round(result["outdoor"] * 9 / 5 + 32, 1)
     response = {"results": results}
     if statistics:
         response["stats"] = calculate_stats(results, units)
