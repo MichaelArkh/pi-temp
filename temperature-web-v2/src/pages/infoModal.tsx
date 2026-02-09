@@ -11,6 +11,9 @@ const InfoModal: React.FC<InfoProps> = ({ data }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Detect mobile screens
 
+    const getOutdoor = (v: any) => {
+        return v?.outdoor ?? null;
+    }
 
     const getMinutesFromLatest = (latest: Date, dateStr: string) => {
         const latestDate = new Date(latest);
@@ -26,6 +29,12 @@ const InfoModal: React.FC<InfoProps> = ({ data }) => {
     const latestDate = getLatestDate(data);
     const minutesArray = data.results.map((v) => getMinutesFromLatest(latestDate, v.date));
     const maxMinutes = minutesArray.length ? Math.max(...minutesArray) : 0;
+
+    const indoorSeries = data.results.map((v) => ({ x: getMinutesFromLatest(latestDate, v.date), y: v.temperature }));
+    const outdoorSeries = data.results
+        .map((v) => ({ x: getMinutesFromLatest(latestDate, v.date), y: getOutdoor(v) }))
+        .filter((p) => p.y !== null);
+    
 
     return (
         <div>
@@ -89,6 +98,21 @@ const InfoModal: React.FC<InfoProps> = ({ data }) => {
                             margin={isMobile ? {left: -12, right: 0, top: 0, bottom: 0} : 0}
                         >
                         </ScatterChart>
+                </Grid>
+
+                <Grid size={{ xs: 12 }} p={2} component={Paper}>
+                        <Typography variant="h6" align="center">Outdoor Temperature vs Time</Typography>
+                        <ScatterChart
+                            height={200}
+                            title='Outdoor Temperature'
+                            series={[
+                                { data: outdoorSeries },
+                            ]}
+                            grid={{ vertical: true, horizontal: true }}
+                            yAxis={isMobile ? [] : [{ label: 'Temperature' }]}
+                            xAxis={isMobile ? [{min: maxMinutes, max: 0 }] : [{ label: 'Time (minutes)', min: maxMinutes, max: 0 }]}
+                            margin={isMobile ? {left: -12, right: 0, top: 0, bottom: 0} : 0}
+                        />
                 </Grid>
                 <Grid size={{ xs: 12 }} p={2} component={Paper}>
                         <Typography variant="h6" align="center">Humidity vs Time</Typography>

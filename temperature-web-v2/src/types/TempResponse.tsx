@@ -2,6 +2,7 @@ export interface TempResult {
     temperature: number;
     humidity: number;
     date: string;
+    outdoor?: number;
 }
 
 export interface TempStats {
