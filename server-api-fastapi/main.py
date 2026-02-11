@@ -1,6 +1,7 @@
 # filepath: /server-api-fastapi/main.py
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
+from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 from dotenv import load_dotenv
@@ -24,7 +25,7 @@ app.add_middleware(
 class TempData(BaseModel):
     temperature: float
     humidity: float
-    outdoor: float
+    outdoor: Optional[float] = None
     token: str
     table: str = "bedroom"  # Default room is "bedroom"
 
@@ -62,7 +63,7 @@ async def insert_temp(data: TempData):
 
     del data_dict["token"]  # Remove the token from the data
     del data_dict["table"] # Remove the room from the data
-    if data_dict["outdoor"] == None:
+    if data_dict.get("outdoor") is None:
         del data_dict["outdoor"]
     # Insert the data into the MongoDB collection
     result = await collection.insert_one(data_dict)
